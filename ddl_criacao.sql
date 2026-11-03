@@ -1,5 +1,5 @@
 CREATE TABLE dim_aluno (
-    sk_dim_aluno INT PRIMARY KEY,
+    sk_dim_aluno INTEGER PRIMARY KEY,
     matricula VARCHAR(20) UNIQUE NOT NULL,
     nome VARCHAR(100) NOT NULL,
     cpf VARCHAR(14) NOT NULL,
@@ -12,15 +12,15 @@ CREATE TABLE dim_aluno (
 );
 
 CREATE TABLE dim_disciplina (
-    sk_dim_disciplina INT PRIMARY KEY,
+    sk_dim_disciplina INTEGER PRIMARY KEY,
     codigo VARCHAR(20) NOT NULL,
     nome VARCHAR(100) NOT NULL,
-    creditos INT NOT NULL,
-    carga_horaria INT NOT NULL
+    creditos INTEGER NOT NULL,
+    carga_horaria INTEGER NOT NULL
 );
 
 CREATE TABLE dim_curso (
-    sk_dim_curso INT PRIMARY KEY,
+    sk_dim_curso INTEGER PRIMARY KEY,
     codigo VARCHAR(20) NOT NULL,
     nome VARCHAR(100) NOT NULL,
     centro VARCHAR(50),
@@ -28,35 +28,37 @@ CREATE TABLE dim_curso (
 );
 
 CREATE TABLE dim_turma_disciplina (
-    sk_dim_turma_disciplina INT PRIMARY KEY,
+    sk_dim_turma_disciplina INTEGER PRIMARY KEY,
     periodo_disciplina VARCHAR(10) NOT NULL,
     horario VARCHAR(50),
     turno VARCHAR(20)
 );
 
 CREATE TABLE dim_data (
-    sk_dim_data INT PRIMARY KEY,
+    sk_dim_data INTEGER PRIMARY KEY,
     data_registro DATE NOT NULL,
     semestre VARCHAR(10) NOT NULL
 );
 
 CREATE TABLE dim_grupo_professor (
-    sk_grupo_professor INT PRIMARY KEY,
+    sk_grupo_professor INTEGER PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     titulo VARCHAR(50),
     salario DECIMAL(10,2)
 );
 
+CREATE SEQUENCE seq_fato_disciplina_id START 1;
+
 CREATE TABLE fato_disciplina (
-    sk_fato INT PRIMARY KEY AUTO_INCREMENT,
-    sk_dim_aluno INT NOT NULL,
-    sk_dim_disciplina INT NOT NULL,
-    sk_dim_curso INT NOT NULL,
-    sk_dim_turma_disciplina INT NOT NULL,
-    sk_dim_data INT NOT NULL,
-    sk_grupo_professor INT NOT NULL,
+    sk_fato INTEGER PRIMARY KEY DEFAULT nextval('seq_fato_disciplina_id'),
+    sk_dim_aluno INTEGER NOT NULL,
+    sk_dim_disciplina INTEGER NOT NULL,
+    sk_dim_curso INTEGER NOT NULL,
+    sk_dim_turma_disciplina INTEGER NOT NULL,
+    sk_dim_data INTEGER NOT NULL,
+    sk_grupo_professor INTEGER NOT NULL,
     nota_final DECIMAL(4,2) NOT NULL,
-    falta INT NOT NULL,
+    falta INTEGER NOT NULL,
     situacao_disciplina VARCHAR(30) NOT NULL,
     FOREIGN KEY (sk_dim_aluno) REFERENCES dim_aluno(sk_dim_aluno),
     FOREIGN KEY (sk_dim_disciplina) REFERENCES dim_disciplina(sk_dim_disciplina),
