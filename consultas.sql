@@ -94,46 +94,10 @@ JOIN dim_aluno a ON a.sk_dim_aluno = f.sk_dim_aluno
 WHERE f.situacao_disciplina <> 'Trancado'
 GROUP BY a.forma_ingresso
 ORDER BY taxa_reprovacao_pct DESC;
- 
- 
--- ---------------------------------------------------------------------
--- 5. Raça/etnia x reprovações
---    Leitura recomendada junto com a consulta 5b (tipo de escola e cota),
---    porque eventuais diferenças tendem a refletir trajetória escolar e
---    condição socioeconômica, não a raça/etnia em si.
--- ---------------------------------------------------------------------
-SELECT
-    a.raca_etnia,
-    COUNT(DISTINCT a.sk_dim_aluno)                                 AS alunos,
-    ROUND(CAST(100.0 * COUNT(*) FILTER (WHERE f.situacao_disciplina LIKE 'Reprovado%')
-               / COUNT(*) AS NUMERIC), 2)                          AS taxa_reprovacao_pct,
-    ROUND(CAST(100.0 * COUNT(*) FILTER (WHERE f.situacao_disciplina = 'Reprovado por falta')
-               / COUNT(*) AS NUMERIC), 2)                          AS taxa_reprov_falta_pct,
-    ROUND(CAST(AVG(f.nota_final) AS NUMERIC), 2)                   AS nota_media
-FROM fato_disciplina f
-JOIN dim_aluno a ON a.sk_dim_aluno = f.sk_dim_aluno
-WHERE f.situacao_disciplina <> 'Trancado'
-GROUP BY a.raca_etnia
-ORDER BY taxa_reprovacao_pct DESC;
- 
- 
--- 5b. Tipo de escola no ensino médio e modalidade de cota x desempenho
-SELECT
-    a.escola_em,
-    a.tipo_cota,
-    COUNT(DISTINCT a.sk_dim_aluno)                                 AS alunos,
-    ROUND(CAST(100.0 * COUNT(*) FILTER (WHERE f.situacao_disciplina LIKE 'Reprovado%')
-               / COUNT(*) AS NUMERIC), 2)                          AS taxa_reprovacao_pct,
-    ROUND(CAST(AVG(f.nota_final) AS NUMERIC), 2)                   AS nota_media
-FROM fato_disciplina f
-JOIN dim_aluno a ON a.sk_dim_aluno = f.sk_dim_aluno
-WHERE f.situacao_disciplina <> 'Trancado'
-GROUP BY a.escola_em, a.tipo_cota
-ORDER BY a.escola_em, taxa_reprovacao_pct DESC;
- 
+
  
 -- ---------------------------------------------------------------------
--- 6. Qual turno é mais eficiente
+-- 5. Qual turno é mais eficiente
 --    Eficiência = aprovação alta, poucas faltas e poucos trancamentos.
 --    Aqui os trancamentos entram no denominador de propósito.
 -- ---------------------------------------------------------------------
@@ -158,7 +122,7 @@ GROUP BY t.turno
 ORDER BY taxa_aprovacao_pct DESC;
  
  
- -- 6b. Turno mais eficiente por disciplina (só disciplinas ofertadas em
+ -- 5b. Turno mais eficiente por disciplina (só disciplinas ofertadas em
 --     mais de um turno)
 --     Ranking dentro de cada disciplina: maior taxa de aprovação, em caso
 --     de empate, maior nota média e depois menor % de faltas.
@@ -211,7 +175,7 @@ ORDER BY codigo, posicao;
  
  
 -- ---------------------------------------------------------------------
--- 7. Cursos com maior tempo de permanência (estadia)
+-- 6. Cursos com maior tempo de permanência (estadia)
 --    Permanência = número de semestres distintos com matrícula.
 --    Mostra a média geral e a média só dos formados (tempo até concluir).
 -- ---------------------------------------------------------------------
@@ -245,7 +209,7 @@ ORDER BY media_semestres_todos DESC;
 -- =====================================================================
  
 -- ---------------------------------------------------------------------
--- 8. Evasão por curso (status do aluno)
+-- 7. Evasão por curso (status do aluno)
 -- ---------------------------------------------------------------------
 SELECT
     c.nome                                                         AS curso,
@@ -262,7 +226,7 @@ ORDER BY taxa_evasao_pct DESC;
  
  
 -- ---------------------------------------------------------------------
--- 9. Disciplinas "gargalo": as mais cursadas mais de uma vez pelo
+-- 8. Disciplinas "gargalo": as mais cursadas mais de uma vez pelo
 --    mesmo aluno (retenção).
 -- ---------------------------------------------------------------------
 WITH tentativas AS (
@@ -287,7 +251,7 @@ LIMIT 10;
  
  
 -- ---------------------------------------------------------------------
--- 10. Titulação do professor x desempenho dos alunos
+-- 9. Titulação do professor x desempenho dos alunos
 --     (inclui o custo médio da folha por aluno avaliado)
 -- ---------------------------------------------------------------------
 SELECT
@@ -305,7 +269,7 @@ ORDER BY taxa_aprovacao_pct DESC;
  
  
 -- ---------------------------------------------------------------------
--- 11. Evolução semestral: aprovação e nota média ao longo do tempo,
+-- 10. Evolução semestral: aprovação e nota média ao longo do tempo,
 --     com a variação em relação ao semestre anterior (função de janela).
 -- ---------------------------------------------------------------------
 WITH por_semestre AS (
@@ -329,7 +293,7 @@ ORDER BY semestre;
  
  
 -- ---------------------------------------------------------------------
--- 12. Top 3 alunos por curso pelo coeficiente de rendimento (CR),
+-- 11. Top 3 alunos por curso pelo coeficiente de rendimento (CR),
 --     média das notas ponderada pelos créditos.
 -- ---------------------------------------------------------------------
 WITH cr AS (
