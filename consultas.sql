@@ -158,6 +158,58 @@ GROUP BY t.turno
 ORDER BY taxa_aprovacao_pct DESC;
  
  
+ -- 6b. Turno mais eficiente por disciplina (só disciplinas ofertadas em
+--     mais de um turno)
+--     Ranking dentro de cada disciplina: maior taxa de aprovação, em caso
+--     de empate, maior nota média e depois menor % de faltas.
+--     Turnos com menos de 20 matrículas na disciplina são descartados para
+--     não ranquear amostras pequenas. Trancamentos entram na taxa.
+--     Para ver só o turno vencedor, acrescente "AND posicao = 1" ao WHERE.
+-- ---------------------------------------------------------------------
+WITH por_turno AS (
+    SELECT
+        d.codigo,
+        d.nome                                                     AS disciplina,
+        t.turno,
+        COUNT(*)                                                   AS matriculas,
+        100.0 * COUNT(*) FILTER (WHERE f.situacao_disciplina LIKE 'Aprovado%') / COUNT(*)
+                                                                   AS taxa_aprovacao,
+        AVG(f.nota_final) FILTER (WHERE f.situacao_disciplina <> 'Trancado')
+                                                                   AS nota_media,
+        AVG(100.0 * f.falta / d.carga_horaria) FILTER (WHERE f.situacao_disciplina <> 'Trancado')
+                                                                   AS faltas_pct_ch
+    FROM fato_disciplina f
+    JOIN dim_disciplina d       ON d.sk_dim_disciplina       = f.sk_dim_disciplina
+    JOIN dim_turma_disciplina t ON t.sk_dim_turma_disciplina = f.sk_dim_turma_disciplina
+    GROUP BY d.codigo, d.nome, t.turno
+    HAVING COUNT(*) >= 20
+),
+ranqueado AS (
+    SELECT
+        pt.*,
+        COUNT(*) OVER (PARTITION BY codigo)                        AS turnos_ofertados,
+        RANK() OVER (PARTITION BY codigo
+                     ORDER BY taxa_aprovacao DESC, nota_media DESC, faltas_pct_ch ASC)
+                                                                   AS posicao,
+        MIN(taxa_aprovacao) OVER (PARTITION BY codigo)             AS pior_aprovacao
+    FROM por_turno pt
+)
+SELECT
+    codigo,
+    disciplina,
+    turnos_ofertados,
+    posicao,
+    turno,
+    matriculas,
+    ROUND(CAST(taxa_aprovacao AS NUMERIC), 2)                      AS taxa_aprovacao_pct,
+    ROUND(CAST(nota_media AS NUMERIC), 2)                          AS nota_media,
+    ROUND(CAST(faltas_pct_ch AS NUMERIC), 2)                       AS faltas_media_pct_ch,
+    ROUND(CAST(taxa_aprovacao - pior_aprovacao AS NUMERIC), 2)     AS vantagem_sobre_pior_pp
+FROM ranqueado
+WHERE turnos_ofertados > 1
+ORDER BY codigo, posicao;
+ 
+ 
 -- ---------------------------------------------------------------------
 -- 7. Cursos com maior tempo de permanência (estadia)
 --    Permanência = número de semestres distintos com matrícula.
