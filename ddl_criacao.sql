@@ -40,15 +40,22 @@ CREATE TABLE dim_data (
     semestre VARCHAR(10) NOT NULL
 );
 
-CREATE TABLE dim_grupo_professor (
-    sk_grupo_professor INTEGER PRIMARY KEY,
+CREATE TABLE dim_professor (
+    sk_professor INTEGER PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
-    titulo VARCHAR(50),
-    salario DECIMAL(10,2)
+    cpf VARCHAR(14) NOT NULL,
+    data_contratacao DATE,
+    salario DECIMAL(10,2),
+    titulo VARCHAR(50)
 );
 
+CREATE TABLE bridge_grupo_professor (
+    sk_grupo_professor INTEGER NOT NULL,
+    sk_professor INTEGER NOT NULL,
+    PRIMARY KEY (sk_grupo_professor, sk_professor),
+    FOREIGN KEY (sk_professor) REFERENCES dim_professor(sk_professor)
+);
 CREATE SEQUENCE seq_fato_disciplina_id START 1;
-
 CREATE TABLE fato_disciplina (
     sk_fato INTEGER PRIMARY KEY DEFAULT nextval('seq_fato_disciplina_id'),
     sk_dim_aluno INTEGER NOT NULL,
@@ -56,14 +63,14 @@ CREATE TABLE fato_disciplina (
     sk_dim_curso INTEGER NOT NULL,
     sk_dim_turma_disciplina INTEGER NOT NULL,
     sk_dim_data INTEGER NOT NULL,
-    sk_grupo_professor INTEGER NOT NULL,
+    sk_grupo_professor INTEGER NOT NULL, 
     nota_final DECIMAL(4,2) NOT NULL,
     falta INTEGER NOT NULL,
     situacao_disciplina VARCHAR(30) NOT NULL,
+    
     FOREIGN KEY (sk_dim_aluno) REFERENCES dim_aluno(sk_dim_aluno),
     FOREIGN KEY (sk_dim_disciplina) REFERENCES dim_disciplina(sk_dim_disciplina),
     FOREIGN KEY (sk_dim_curso) REFERENCES dim_curso(sk_dim_curso),
     FOREIGN KEY (sk_dim_turma_disciplina) REFERENCES dim_turma_disciplina(sk_dim_turma_disciplina),
-    FOREIGN KEY (sk_dim_data) REFERENCES dim_data(sk_dim_data),
-    FOREIGN KEY (sk_grupo_professor) REFERENCES dim_grupo_professor(sk_grupo_professor)
+    FOREIGN KEY (sk_dim_data) REFERENCES dim_data(sk_dim_data)
 );
