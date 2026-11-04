@@ -1,0 +1,40 @@
+﻿Perguntas de negócio 
+
+
+Consultas analíticas sobre o esquema estrela acadêmico 
+
+
+1. Qual é a taxa de aprovação e a nota média de cada disciplina? 
+
+
+2. Quais professores mais reprovam? 
+
+
+3. Qual o percentual de alunos que nunca reprovaram, em cada curso? 
+
+
+4. A forma de ingresso influencia as reprovações? 
+
+
+5. Qual turno é mais eficiente? 
+
+
+5b. Em cada disciplina oferecida em mais de um turno, qual turno tem melhor resultado? 
+
+
+6. Em quais cursos os alunos ficam mais tempo? 
+
+
+7. Quais cursos têm maior evasão? 
+
+
+8. Quais disciplinas mais retêm alunos? 
+
+
+9. A titulação do professor se reflete no desempenho dos alunos? 
+
+
+10. Como a aprovação evoluiu ao longo dos semestres? 
+
+
+11. Quem são os 3 melhores alunos de cada curso?
