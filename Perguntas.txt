@@ -35,6 +35,3 @@ Consultas analíticas sobre o esquema estrela acadêmico
 
 
 10. Como a aprovação evoluiu ao longo dos semestres? 
-
-
-11. Quem são os 3 melhores alunos de cada curso?
