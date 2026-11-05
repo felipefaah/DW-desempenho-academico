@@ -1,4 +1,4 @@
-**Perguntas de negócio** 
+## **Perguntas de negócio** 
 
 Consultas analíticas sobre o esquema estrela acadêmico 
 
@@ -86,7 +86,7 @@ Consultas analíticas sobre o esquema estrela acadêmico
 * **Utilidade:** Pode indicar duas coisas para a gestão: disciplinas com metodologias de ensino de extremo sucesso e alto engajamento (que devem ser replicadas), ou disciplinas com avaliações pouco rigorosas ("fáceis demais"), o que ajuda o Núcleo Docente Estruturante (NDE) a equilibrar o nível de exigência da grade curricular.  
 * **Tabelas utilizadas:** fato\_disciplina, dim\_disciplina.
 
-  ### **15\. Ranking de evasão: Cursos com maior taxa de abandono da universidade**
+**15\. Ranking de evasão: Cursos com maior taxa de abandono da universidade**
 
 * **Pergunta que responde:** Quais cursos da universidade apresentam as maiores taxas percentuais e o maior volume absoluto de abandono (evasão) de alunos?  
 * **Utilidade:** Visão puramente estratégica para a Reitoria e Pró-Reitoria. Se um curso tem uma taxa de abandono discrepante do resto da universidade, isso acende um alerta vermelho para problemas estruturais: o currículo pode estar desatualizado, o mercado de trabalho pode não estar atrativo para a profissão, ou a infraestrutura e o corpo docente do centro estão falhando em engajar os estudantes.  
